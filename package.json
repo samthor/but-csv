@@ -1,0 +1,27 @@
+{
+  "main": "index.js",
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^17.0.17",
+    "ava": "^4.0.1"
+  },
+  "name": "but-csv",
+  "version": "1.0.0",
+  "description": "but.. csv",
+  "scripts": {
+    "test": "ava"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samthor/but-csv.git"
+  },
+  "keywords": [
+    "csv"
+  ],
+  "author": "Sam Thorogood <sam.thorogood@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/samthor/but-csv/issues"
+  },
+  "homepage": "https://github.com/samthor/but-csv#readme"
+}
