@@ -2,29 +2,28 @@
 const d = new TextDecoder();
 const dec = d.decode.bind(d);
 
+const e = new TextEncoder();
+
 const C_COMMA = 44;
 const C_NEWLINE = 10;
 const C_QUOTE = 34;
 
 /**
- * @param {Uint8Array} source
+ * @param {Uint8Array|string} source
  * @return {string[][]}
  */
 export function parse(source) {
-  /** @type {string[][]} */
-  const all = [];
-
-  parseCallback(source, (x) => all.push(x));
-
-  return all;
+  return [...iter(source)];
 }
 
-
 /**
- * @param {Uint8Array} source
- * @param {(x: string[]) => void} announce
+ * @param {Uint8Array|string} source
  */
-export function parseCallback(source, announce) {
+export function *iter(source) {
+  if (typeof source === 'string') {
+    source = e.encode(source);
+  }
+
   let i = 0;
 
   /** @type {string[]} */
@@ -32,7 +31,7 @@ export function parseCallback(source, announce) {
 
   outer: for (; ;) {
     if (i >= source.length) {
-      announce(row);
+      yield row;
       break;
     }
 
@@ -40,7 +39,7 @@ export function parseCallback(source, announce) {
     switch (start) {
       case C_NEWLINE: {
         const copy = row.splice(0, row.length);
-        announce(copy);
+        yield copy;
         ++i;
         continue;
       }
@@ -56,7 +55,7 @@ export function parseCallback(source, announce) {
             const s = dec(source.subarray(i + 1));
             i = source.length;
             row.push(s);
-            announce(row);
+            yield row;
             return;
           }
           const part = dec(source.subarray(i + 1, next));
@@ -108,4 +107,27 @@ export function parseCallback(source, announce) {
     }
   }
 
+}
+
+
+const needsQuoteRegexp = /[\"\n,]/;
+const globalQuote = /"/g;
+
+
+/**
+ * @param {string} raw
+ */
+export const r = (raw) => {
+  if (!needsQuoteRegexp.test(raw)) {
+    return raw;
+  }
+  return '"' + raw.replace(globalQuote, '""') + '"';
+};
+
+
+/**
+ * @param {string[][]} raw
+ */
+export function build(raw) {
+  return raw.map((row) => row.map(r).join(',')).join('\n');
 }

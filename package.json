@@ -1,5 +1,10 @@
 {
   "main": "index.js",
+  "exports": {
+    ".": {
+      "import": "./index.min.mjs"
+    }
+  },
   "type": "module",
   "devDependencies": {
     "@types/node": "^17.0.17",
@@ -11,7 +16,7 @@
   "description": "but.. csv",
   "scripts": {
     "test": "ava",
-    "prepublishOnly": "esbuild --minify index.js > index.min.js"
+    "prepublishOnly": "esbuild --minify index.js > index.min.mjs"
   },
   "repository": {
     "type": "git",

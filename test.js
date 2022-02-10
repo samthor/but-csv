@@ -1,5 +1,5 @@
 import test from 'ava';
-import { parse } from './index.js';
+import { build, iter, parse } from './index.js';
 
 test('basic', t => {
   const b = Buffer.from(`a,b,c\n"f"oo","bar""?",zin""g\n"what""""x"`);
@@ -30,4 +30,18 @@ test('newline behavior', t => {
     [],
     [],
   ]);
+});
+
+test('enc', t => {
+  t.is(build([['1', '2', '3']]), '1,2,3');
+  t.is(build([['1,', '2\n', '3']]), '"1,","2\n",3');
+});
+
+test('string', t => {
+  for (const row of iter('hello')) {
+    t.deepEqual(row, ['hello']);
+  }
+
+  const outAll = [...iter('hello\nthere')];
+  t.deepEqual(outAll, [['hello'], ['there']]);
 });
