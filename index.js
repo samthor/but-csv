@@ -1,6 +1,6 @@
 
-const dec = new TextDecoder();
-
+const d = new TextDecoder();
+const dec = d.decode.bind(d);
 
 const C_COMMA = 44;
 const C_NEWLINE = 10;
@@ -42,7 +42,7 @@ export function parseCallback(source, announce) {
         const copy = row.splice(0, row.length);
         announce(copy);
         ++i;
-        continue outer;
+        continue;
       }
 
       case C_QUOTE: {
@@ -53,12 +53,13 @@ export function parseCallback(source, announce) {
           const next = source.indexOf(C_QUOTE, i + 1);
           if (next === -1) {
             // emit to end
-            const s = dec.decode(source.subarray(i + 1));
+            const s = dec(source.subarray(i + 1));
             i = source.length;
             row.push(s);
-            continue outer;
+            announce(row);
+            return;
           }
-          const part = dec.decode(source.subarray(i + 1, next));
+          const part = dec(source.subarray(i + 1, next));
           s += part;
 
           i = next + 1;
@@ -93,7 +94,7 @@ export function parseCallback(source, announce) {
           to = newline + i;
         }
 
-        const value = dec.decode(source.subarray(i, to));
+        const value = dec(source.subarray(i, to));
         row.push(value);
 
         i = to;

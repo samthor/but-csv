@@ -10,7 +10,8 @@
   "version": "1.0.0",
   "description": "but.. csv",
   "scripts": {
-    "test": "ava"
+    "test": "ava",
+    "prepublishOnly": "esbuild --minify index.js > index.min.js"
   },
   "repository": {
     "type": "git",
