@@ -3,7 +3,8 @@
   "type": "module",
   "devDependencies": {
     "@types/node": "^17.0.17",
-    "ava": "^4.0.1"
+    "ava": "^4.0.1",
+    "esbuild": "^0.14.21"
   },
   "name": "but-csv",
   "version": "1.0.0",
