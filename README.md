@@ -27,7 +27,7 @@ const out = parse(f);
 
 ## Iterator
 
-Like parse, but you get each row at a time and can return earl.y
+Like parse, but you get each row at a time and can return early.
 
 ```js
 import { iter } from 'but-csv';
