@@ -1,6 +1,6 @@
 # but-csv
 
-~900 byte minified CSV parser and builder.
+728 byte (minified) CSV parser and builder.
 Smaller when compressed.
 Built in ESM only.
 
