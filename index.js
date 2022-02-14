@@ -1,7 +1,5 @@
 
 const d = new TextDecoder();
-const dec = d.decode.bind(d);
-
 const e = new TextEncoder();
 
 const C_COMMA = 44;
@@ -29,70 +27,59 @@ export function *iter(source) {
   /** @type {string[]} */
   const row = [];
 
-  for (; ;) {
-    if (i >= source.length) {
-      yield row;
-      break;
-    }
-
+  while (i < source.length) {
     // we consume at most one col per outer loop
     let s = '';
 
     const start = source[i];
-    switch (start) {
-      case C_NEWLINE: {
-        const copy = row.splice(0, row.length);
-        yield copy;
-        ++i;
-        continue;
-      }
+    if (start === C_NEWLINE) {
+      const copy = row.splice(0, row.length);
+      yield copy;
+      ++i;
+      continue;
 
-      case C_QUOTE: {
-        // consume many parts of quoted string
-        for (; ;) {
-          let next = source.indexOf(C_QUOTE, i + 1);
-          if (next === -1) {
-            next = source.length;
-          }
-
-          const part = dec(source.subarray(i + 1, next));
-          s += part;
-
-          i = next + 1;
-          if (i >= source.length) {
-            break;  // end of input
-          }
-          const check = source[i];
-          if (check === C_COMMA || check === C_NEWLINE) {
-            break;  // end of string
-          } else if (check !== C_QUOTE) {
-            --i;  // allow missing double quote _anyway_
-          }
-          s += '"';
+    } else if (start === C_QUOTE) {
+      // consume many parts of quoted string
+      for (; ;) {
+        let next = source.indexOf(C_QUOTE, i + 1);
+        if (next === -1) {
+          next = source.length;
         }
 
-        break;
+        const part = d.decode(source.subarray(i + 1, next));
+        s += part;
+
+        i = next + 1;
+        if (i >= source.length) {
+          break;  // end of input
+        }
+        const check = source[i];
+        if (check === C_COMMA || check === C_NEWLINE) {
+          break;  // end of string
+        } else if (check !== C_QUOTE) {
+          --i;  // allow missing double quote _anyway_
+        }
+        s += '"';
       }
 
-      default: {
-        // this is a "normal" value, ends with a comma or newline
-        // look for comma first (educated guess)
-        let to = source.indexOf(C_COMMA, i);
-        if (to === -1) {
-          to = source.length;
-        }
-
-        let newline = source.subarray(i, to).indexOf(C_NEWLINE);
-        if (newline === -1) {
-          // ignore, ok
-        } else {
-          to = newline + i;
-        }
-
-        s = dec(source.subarray(i, to));
-        i = to;
-        break;
+    } else {
+      // this is a "normal" value, ends with a comma or newline
+      // look for comma first (educated guess)
+      let to = source.indexOf(C_COMMA, i);
+      if (to === -1) {
+        to = source.length;
       }
+
+      let newline = source.subarray(i, to).indexOf(C_NEWLINE);
+      if (newline === -1) {
+        // ignore, ok
+      } else {
+        to = newline + i;
+      }
+
+      s = d.decode(source.subarray(i, to));
+      i = to;
+
     }
 
     row.push(s);
@@ -103,6 +90,7 @@ export function *iter(source) {
     }
   }
 
+  yield row;
 }
 
 
