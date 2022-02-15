@@ -1,9 +1,6 @@
 
-const S_COMMA = ',';
 const C_COMMA = 44;
-const S_NEWLINE = '\n';
 const C_NEWLINE = 10;
-const S_QUOTE = '"';
 const C_QUOTE = 34;
 
 /**
@@ -29,7 +26,7 @@ export function *iter(source) {
     let s = '';
 
     if (i > newline) {
-      newline = source.indexOf(S_NEWLINE, i);
+      newline = source.indexOf('\n', i);
       if (newline === -1) {
         newline = source.length;
       }
@@ -45,7 +42,7 @@ export function *iter(source) {
     } else if (start === C_QUOTE) {
       // consume many parts of quoted string
       for (; ;) {
-        let next = source.indexOf(S_QUOTE, i + 1);
+        let next = source.indexOf('"', i + 1);
         if (next === -1) {
           next = source.length;
         }
@@ -69,7 +66,7 @@ export function *iter(source) {
     } else {
       // this is a "normal" value, ends with a comma or newline
       // look for comma first (educated guess)
-      let to = source.indexOf(S_COMMA, i);
+      let to = source.indexOf(',', i);
       if (to === -1) {
         to = source.length;
       }
