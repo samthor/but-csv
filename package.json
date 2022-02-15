@@ -12,11 +12,11 @@
     "esbuild": "^0.14.21"
   },
   "name": "but-csv",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "but.. csv",
   "scripts": {
     "test": "ava",
-    "prepublishOnly": "esbuild --minify index.js > index.min.mjs"
+    "prepublishOnly": "esbuild --minify --tree-shaking=true index.js > index.min.mjs"
   },
   "repository": {
     "type": "git",
