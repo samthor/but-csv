@@ -1,8 +1,8 @@
 
 const S_COMMA = ',';
 const C_COMMA = 44;
-const C_NEWLINE = 10;
 const S_NEWLINE = '\n';
+const C_NEWLINE = 10;
 const S_QUOTE = '"';
 const C_QUOTE = 34;
 
@@ -19,6 +19,7 @@ export const parse = (source) => {
  */
 export function *iter(source) {
   let i = 0;
+  let newline = -1;
 
   /** @type {string[]} */
   const row = [];
@@ -26,6 +27,13 @@ export function *iter(source) {
   while (i < source.length) {
     // we consume at most one col per outer loop
     let s = '';
+
+    if (i > newline) {
+      newline = source.indexOf(S_NEWLINE, i);
+      if (newline === -1) {
+        newline = source.length;
+      }
+    }
 
     const start = source.charCodeAt(i);
     if (start === C_NEWLINE) {
@@ -65,22 +73,9 @@ export function *iter(source) {
       if (to === -1) {
         to = source.length;
       }
-
-      // make sure there wasn't a newline here (this is mildly faster than getting the substring)
-      let newline = source.indexOf(S_NEWLINE, i);
-      if (newline === -1 || newline > to) {
-        // ignore
-      } else {
+      if (newline < to) {
         to = newline;
       }
-
-      // TODO: this also works
-      // for (let j = i; j < to; ++j) {
-      //   if (source.charCodeAt(j) === C_NEWLINE) {
-      //     to = j;
-      //     break;
-      //   }
-      // }
 
       s = source.substring(i, to);
       i = to;
