@@ -18,6 +18,12 @@ export function *iter(source) {
   let i = 0;
   let newline = -1;
 
+  /**
+   * @param {number} arg
+   * @return {number}
+   */
+  const convertToLength = (arg) => arg === -1 ? source.length : arg;
+
   /** @type {string[]} */
   const row = [];
 
@@ -26,10 +32,7 @@ export function *iter(source) {
     let s = '';
 
     if (i > newline) {
-      newline = source.indexOf('\n', i);
-      if (newline === -1) {
-        newline = source.length;
-      }
+      newline = convertToLength(source.indexOf('\n', i));
     }
 
     const start = source.charCodeAt(i);
@@ -42,11 +45,7 @@ export function *iter(source) {
     } else if (start === C_QUOTE) {
       // consume many parts of quoted string
       for (; ;) {
-        let next = source.indexOf('"', i + 1);
-        if (next === -1) {
-          next = source.length;
-        }
-
+        const next = convertToLength(source.indexOf('"', i + 1));
         const part = source.substring(i + 1, next);
         s += part;
 
@@ -66,10 +65,7 @@ export function *iter(source) {
     } else {
       // this is a "normal" value, ends with a comma or newline
       // look for comma first (educated guess)
-      let to = source.indexOf(',', i);
-      if (to === -1) {
-        to = source.length;
-      }
+      let to = convertToLength(source.indexOf(',', i));
       if (newline < to) {
         to = newline;
       }
