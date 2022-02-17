@@ -26,7 +26,7 @@ const out = parse('foo,bar,zing\n1,2,3');
 ```
 
 Only supports passing a `string` (not a `Buffer` or friends).
-Node's operations on `string` so much faster than on raw bytes (10x improvement).
+Node's operations on `string` are so much faster than on raw bytes (10x improvement).
 
 ```js
 const f = fs.readFileSync('source.csv', 'utf-8');
@@ -40,7 +40,7 @@ Like parse, but you get each row at a time and can return early.
 ```js
 import { iter } from 'but-csv';
 
-for (const row of iter('foo,bar,zing\n1,2,3') {
+for (const row of iter('foo,bar,zing\n1,2,3')) {
   // will be an array of ['foo', 'bar', 'zing'],
   // then an array of ['1', '2', '3']
 }
