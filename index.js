@@ -16,10 +16,7 @@ export const parse = (source) => {
  */
 export function *iter(source) {
   let i = 0;
-  const c = () => source.charCodeAt(i);
-
   let newline = -1;
-
   let length = source.length;
 
   /** @type {string[]} */
@@ -27,16 +24,17 @@ export function *iter(source) {
 
   /** @type {string} */
   let s;
+
   /** @type {number} */
-  let char;
-  /** @type {number} */
-  let index;
+  let temp;
+
+  const sourceCharCodeAt = () => source.charCodeAt(i);
+  const substringIToTemp = () => source.substring(i, temp);
 
   for (;;) {
     // we consume at most one col per outer loop
-    if (c() == C_NEWLINE) {
-      yield row;
-      row = [];
+    if (sourceCharCodeAt() == C_NEWLINE) {
+      yield row.splice(0, row.length);
       ++i;
     }
 
@@ -51,25 +49,22 @@ export function *iter(source) {
       }
     }
 
-    char = c();
-    if (char == C_QUOTE) {
+    if (sourceCharCodeAt() == C_QUOTE) {
       s = '';
       // consume many parts of quoted string
       for (; ;) {
-        index = source.indexOf('"', i + 1);
-        if (index < 0) {
-          index = length;
+        ++i;
+        temp = source.indexOf('"', i);
+        if (temp < 0) {
+          temp = length;
         }
-        s += source.substring(i + 1, index);
+        s += substringIToTemp();
 
-        i = index + 1;
-        if (i >= length) {
-          break;  // end of input
-        }
-        char = c();
-        if (char == C_COMMA || char == C_NEWLINE) {
-          break;  // end of string
-        } else if (char != C_QUOTE) {
+        i = temp + 1;
+        temp = sourceCharCodeAt();
+        if (temp == C_COMMA || temp == C_NEWLINE || i >= length) {
+          break;  // end of string or end of input
+        } else if (temp != C_QUOTE) {
           --i;  // allow missing double quote _anyway_
         }
         s += '"';
@@ -78,19 +73,19 @@ export function *iter(source) {
     } else {
       // this is a "normal" value, ends with a comma or newline
       // look for comma first (educated guess)
-      index = source.indexOf(',', i);
-      if (index < 0 || newline < index) {
-        index = newline;
+      temp = source.indexOf(',', i);
+      if (temp < 0 || newline < temp) {
+        temp = newline;
       }
 
-      s = source.substring(i, index);
-      i = index;
+      s = substringIToTemp();
+      i = temp;
     }
 
     row.push(s);
 
     // look for ,
-    if (c() == C_COMMA) {
+    if (sourceCharCodeAt() == C_COMMA) {
       ++i;
     }
   }
