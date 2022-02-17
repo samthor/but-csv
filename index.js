@@ -18,14 +18,22 @@ export function *iter(source) {
   let i = 0;
   let newline = -1;
 
-  const length = source.length;
+  let length = source.length;
 
   /** @type {string[]} */
-  const row = [];
+  let row = [];
+
+  /** @type {string} */
+  let s;
+  /** @type {number} */
+  let char;
+  /** @type {number} */
+  let index;
 
   while (i < length) {
     // we consume at most one col per outer loop
-    let s = '';
+    s = '';
+    char = source.charCodeAt(i);
 
     if (i > newline) {
       newline = source.indexOf('\n', i);
@@ -34,29 +42,28 @@ export function *iter(source) {
       }
     }
 
-    const start = source.charCodeAt(i);
-    if (start === C_NEWLINE) {
+    if (char === C_NEWLINE) {
       yield row.splice(0, row.length);
       ++i;
       continue;
 
-    } else if (start === C_QUOTE) {
+    } else if (char === C_QUOTE) {
       // consume many parts of quoted string
       for (; ;) {
-        let next = source.indexOf('"', i + 1);
-        if (next < 0) {
-          next = length;
+        index = source.indexOf('"', i + 1);
+        if (index < 0) {
+          index = length;
         }
-        s += source.substring(i + 1, next);
+        s += source.substring(i + 1, index);
 
-        i = next + 1;
+        i = index + 1;
         if (i >= length) {
           break;  // end of input
         }
-        const check = source.charCodeAt(i);
-        if (check === C_COMMA || check === C_NEWLINE) {
+        char = source.charCodeAt(i);
+        if (char === C_COMMA || char === C_NEWLINE) {
           break;  // end of string
-        } else if (check !== C_QUOTE) {
+        } else if (char !== C_QUOTE) {
           --i;  // allow missing double quote _anyway_
         }
         s += '"';
@@ -65,13 +72,13 @@ export function *iter(source) {
     } else {
       // this is a "normal" value, ends with a comma or newline
       // look for comma first (educated guess)
-      let to = source.indexOf(',', i);
-      if (to < 0 || newline < to) {
-        to = newline;
+      index = source.indexOf(',', i);
+      if (index < 0 || newline < index) {
+        index = newline;
       }
 
-      s = source.substring(i, to);
-      i = to;
+      s = source.substring(i, index);
+      i = index;
     }
 
     row.push(s);
