@@ -18,43 +18,52 @@ export function *iter(source) {
   let i = 0;
   let newline = -1;
 
-  /**
-   * @param {number} arg
-   * @return {number}
-   */
-  const convertToLength = (arg) => arg === -1 ? source.length : arg;
+  let length = source.length;
 
   /** @type {string[]} */
-  const row = [];
+  let row = [];
 
-  while (i < source.length) {
+  /** @type {string} */
+  let s;
+  /** @type {number} */
+  let char;
+  /** @type {number} */
+  let index;
+
+  while (i < length) {
     // we consume at most one col per outer loop
-    let s = '';
+    s = '';
+    char = source.charCodeAt(i);
 
     if (i > newline) {
-      newline = convertToLength(source.indexOf('\n', i));
+      newline = source.indexOf('\n', i);
+      if (newline < 0) {
+        newline = length;
+      }
     }
 
-    const start = source.charCodeAt(i);
-    if (start === C_NEWLINE) {
+    if (char == C_NEWLINE) {
       yield row.splice(0, row.length);
       ++i;
       continue;
 
-    } else if (start === C_QUOTE) {
+    } else if (char == C_QUOTE) {
       // consume many parts of quoted string
       for (; ;) {
-        const next = convertToLength(source.indexOf('"', i + 1));
-        s += source.substring(i + 1, next);
+        index = source.indexOf('"', i + 1);
+        if (index < 0) {
+          index = length;
+        }
+        s += source.substring(i + 1, index);
 
-        i = next + 1;
-        if (i >= source.length) {
+        i = index + 1;
+        if (i >= length) {
           break;  // end of input
         }
-        const check = source.charCodeAt(i);
-        if (check === C_COMMA || check === C_NEWLINE) {
+        char = source.charCodeAt(i);
+        if (char == C_COMMA || char == C_NEWLINE) {
           break;  // end of string
-        } else if (check !== C_QUOTE) {
+        } else if (char != C_QUOTE) {
           --i;  // allow missing double quote _anyway_
         }
         s += '"';
@@ -63,19 +72,19 @@ export function *iter(source) {
     } else {
       // this is a "normal" value, ends with a comma or newline
       // look for comma first (educated guess)
-      let to = convertToLength(source.indexOf(',', i));
-      if (newline < to) {
-        to = newline;
+      index = source.indexOf(',', i);
+      if (index < 0 || newline < index) {
+        index = newline;
       }
 
-      s = source.substring(i, to);
-      i = to;
+      s = source.substring(i, index);
+      i = index;
     }
 
     row.push(s);
 
     // look for ,
-    if (source.charCodeAt(i) === C_COMMA) {
+    if (source.charCodeAt(i) == C_COMMA) {
       ++i;
     }
   }
@@ -95,7 +104,7 @@ const r = (raw) => {
   if (!needsQuoteRegexp.test(raw)) {
     return raw;
   }
-  return '"' + raw.replace(globalQuote, '""') + '"';
+  return `"${raw.replace(globalQuote, '""')}"`;
 };
 
 
