@@ -42,12 +42,12 @@ export function *iter(source) {
       }
     }
 
-    if (char === C_NEWLINE) {
+    if (char == C_NEWLINE) {
       yield row.splice(0, row.length);
       ++i;
       continue;
 
-    } else if (char === C_QUOTE) {
+    } else if (char == C_QUOTE) {
       // consume many parts of quoted string
       for (; ;) {
         index = source.indexOf('"', i + 1);
@@ -61,9 +61,9 @@ export function *iter(source) {
           break;  // end of input
         }
         char = source.charCodeAt(i);
-        if (char === C_COMMA || char === C_NEWLINE) {
+        if (char == C_COMMA || char == C_NEWLINE) {
           break;  // end of string
-        } else if (char !== C_QUOTE) {
+        } else if (char != C_QUOTE) {
           --i;  // allow missing double quote _anyway_
         }
         s += '"';
@@ -84,7 +84,7 @@ export function *iter(source) {
     row.push(s);
 
     // look for ,
-    if (source.charCodeAt(i) === C_COMMA) {
+    if (source.charCodeAt(i) == C_COMMA) {
       ++i;
     }
   }
