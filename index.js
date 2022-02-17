@@ -16,7 +16,7 @@ export const parse = (source) => {
  */
 export function *iter(source) {
   let i = 0;
-  const c = () => source.charCodeAt(i) ?? 0;
+  const c = () => source.charCodeAt(i);
 
   let newline = -1;
 
