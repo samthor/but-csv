@@ -12,7 +12,7 @@
     "esbuild": "^0.14.21"
   },
   "name": "but-csv",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "but.. csv",
   "scripts": {
     "test": "ava",
