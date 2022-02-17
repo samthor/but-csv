@@ -28,8 +28,8 @@ export function *iter(source) {
   /** @type {number} */
   let temp;
 
-  const sourceCharCodeAt = () => source.charCodeAt(i);
-  const substringIToTemp = () => source.substring(i, temp);
+  let sourceCharCodeAt = () => source.charCodeAt(i);
+  let substringIToTemp = () => source.substring(i, temp);
 
   for (;;) {
     // we consume at most one col per outer loop
