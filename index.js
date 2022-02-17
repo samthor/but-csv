@@ -104,7 +104,7 @@ const r = (raw) => {
   if (!needsQuoteRegexp.test(raw)) {
     return raw;
   }
-  return '"' + raw.replace(globalQuote, '""') + '"';
+  return `"${raw.replace(globalQuote, '""')}"`;
 };
 
 
