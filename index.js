@@ -16,6 +16,8 @@ export const parse = (source) => {
  */
 export function *iter(source) {
   let i = 0;
+  const c = () => source.charCodeAt(i) ?? 0;
+
   let newline = -1;
 
   let length = source.length;
@@ -30,10 +32,17 @@ export function *iter(source) {
   /** @type {number} */
   let index;
 
-  while (i < length) {
+  for (;;) {
     // we consume at most one col per outer loop
-    s = '';
-    char = source.charCodeAt(i);
+    if (c() == C_NEWLINE) {
+      yield row;
+      row = [];
+      ++i;
+    }
+
+    if (i >= length) {
+      break;
+    }
 
     if (i > newline) {
       newline = source.indexOf('\n', i);
@@ -42,12 +51,9 @@ export function *iter(source) {
       }
     }
 
-    if (char == C_NEWLINE) {
-      yield row.splice(0, row.length);
-      ++i;
-      continue;
-
-    } else if (char == C_QUOTE) {
+    char = c();
+    if (char == C_QUOTE) {
+      s = '';
       // consume many parts of quoted string
       for (; ;) {
         index = source.indexOf('"', i + 1);
@@ -60,7 +66,7 @@ export function *iter(source) {
         if (i >= length) {
           break;  // end of input
         }
-        char = source.charCodeAt(i);
+        char = c();
         if (char == C_COMMA || char == C_NEWLINE) {
           break;  // end of string
         } else if (char != C_QUOTE) {
@@ -84,7 +90,7 @@ export function *iter(source) {
     row.push(s);
 
     // look for ,
-    if (source.charCodeAt(i) == C_COMMA) {
+    if (c() == C_COMMA) {
       ++i;
     }
   }
