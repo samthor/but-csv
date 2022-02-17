@@ -37,8 +37,7 @@ export function *iter(source) {
 
     const start = source.charCodeAt(i);
     if (start === C_NEWLINE) {
-      const copy = row.splice(0, row.length);
-      yield copy;
+      yield row.splice(0, row.length);
       ++i;
       continue;
 
@@ -46,8 +45,7 @@ export function *iter(source) {
       // consume many parts of quoted string
       for (; ;) {
         const next = convertToLength(source.indexOf('"', i + 1));
-        const part = source.substring(i + 1, next);
-        s += part;
+        s += source.substring(i + 1, next);
 
         i = next + 1;
         if (i >= source.length) {
