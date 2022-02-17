@@ -18,21 +18,20 @@ export function *iter(source) {
   let i = 0;
   let newline = -1;
 
-  /**
-   * @param {number} arg
-   * @return {number}
-   */
-  const convertToLength = (arg) => arg === -1 ? source.length : arg;
+  const length = source.length;
 
   /** @type {string[]} */
   const row = [];
 
-  while (i < source.length) {
+  while (i < length) {
     // we consume at most one col per outer loop
     let s = '';
 
     if (i > newline) {
-      newline = convertToLength(source.indexOf('\n', i));
+      newline = source.indexOf('\n', i);
+      if (newline < 0) {
+        newline = length;
+      }
     }
 
     const start = source.charCodeAt(i);
@@ -44,11 +43,14 @@ export function *iter(source) {
     } else if (start === C_QUOTE) {
       // consume many parts of quoted string
       for (; ;) {
-        const next = convertToLength(source.indexOf('"', i + 1));
+        let next = source.indexOf('"', i + 1);
+        if (next < 0) {
+          next = length;
+        }
         s += source.substring(i + 1, next);
 
         i = next + 1;
-        if (i >= source.length) {
+        if (i >= length) {
           break;  // end of input
         }
         const check = source.charCodeAt(i);
@@ -63,8 +65,8 @@ export function *iter(source) {
     } else {
       // this is a "normal" value, ends with a comma or newline
       // look for comma first (educated guess)
-      let to = convertToLength(source.indexOf(',', i));
-      if (newline < to) {
+      let to = source.indexOf(',', i);
+      if (to < 0 || newline < to) {
         to = newline;
       }
 
