@@ -30,6 +30,7 @@ export function *iter(source) {
 
   let sourceCharCodeAt = () => source.charCodeAt(i);
   let substringIToTemp = () => source.substring(i, temp);
+  let nextIndex = (/** @type {string} */ c) => source.indexOf(c, i);
 
   for (;;) {
     // we consume at most one col per outer loop
@@ -43,7 +44,7 @@ export function *iter(source) {
     }
 
     if (i > newline) {
-      newline = source.indexOf('\n', i);
+      newline = nextIndex('\n');
       if (newline < 0) {
         newline = length;
       }
@@ -54,7 +55,7 @@ export function *iter(source) {
       // consume many parts of quoted string
       for (; ;) {
         ++i;
-        temp = source.indexOf('"', i);
+        temp = nextIndex('"');
         if (temp < 0) {
           temp = length;
         }
@@ -73,7 +74,7 @@ export function *iter(source) {
     } else {
       // this is a "normal" value, ends with a comma or newline
       // look for comma first (educated guess)
-      temp = source.indexOf(',', i);
+      temp = nextIndex(',');
       if (temp < 0 || newline < temp) {
         temp = newline;
       }
