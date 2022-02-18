@@ -27,10 +27,13 @@ export function *iter(source) {
 
   /** @type {number} */
   let temp;
+  /** @type {number} */
+  let temp2;
 
   let sourceCharCodeAt = () => source.charCodeAt(i);
   let substringIToTemp = () => source.substring(i, temp);
-  let nextIndex = (/** @type {string} */ c) => source.indexOf(c, i);
+  let nextIndex = (/** @type {string} */ c) =>
+      (temp2 = source.indexOf(c, i)) < 0 ? length : temp2;
 
   for (;;) {
     // we consume at most one col per outer loop
@@ -45,9 +48,6 @@ export function *iter(source) {
 
     if (i > newline) {
       newline = nextIndex('\n');
-      if (newline < 0) {
-        newline = length;
-      }
     }
 
     if (sourceCharCodeAt() == C_QUOTE) {
@@ -56,9 +56,6 @@ export function *iter(source) {
       for (; ;) {
         ++i;
         temp = nextIndex('"');
-        if (temp < 0) {
-          temp = length;
-        }
         s += substringIToTemp();
 
         i = temp + 1;
@@ -75,7 +72,7 @@ export function *iter(source) {
       // this is a "normal" value, ends with a comma or newline
       // look for comma first (educated guess)
       temp = nextIndex(',');
-      if (temp < 0 || newline < temp) {
+      if (newline < temp) {
         temp = newline;
       }
 
