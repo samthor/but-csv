@@ -73,10 +73,15 @@ export function *iter(source) {
     } else {
       // this is a "normal" value, ends with a comma or newline
       // look for comma first (educated guess)
+      temp = (temp = nextIndex(',')) > newline ? newline : temp;
+
+      // the above line is this, which saves a byte:
+      /*
       temp = nextIndex(',');
       if (newline < temp) {
         temp = newline;
       }
+      */
 
       s = substringIToTemp();
       i = temp;
