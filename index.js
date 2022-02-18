@@ -27,17 +27,19 @@ export function *iter(source) {
 
   /** @type {number} */
   let temp;
-  /** @type {number} */
-  let temp2;
 
   let sourceCharCodeAt = () => source.charCodeAt(i);
-  let substringIToTemp = () => source.substring(i, temp);
+  let substringIToTemp = () => source.slice(i, temp);  // slice is smaller than substring
+
+  /** @type {number} */
+  let nextIndexTemp;
   let nextIndex = (/** @type {string} */ c) =>
-      (temp2 = source.indexOf(c, i)) < 0 ? length : temp2;
+      (nextIndexTemp = source.indexOf(c, i)) < 0 ? length : nextIndexTemp;
 
   for (;;) {
     // we consume at most one col per outer loop
     if (sourceCharCodeAt() == C_NEWLINE) {
+      // yielding row and resetting is smaller but about 10% slower
       yield row.splice(0, row.length);
       ++i;
     }
@@ -111,5 +113,7 @@ let r = (raw) => {
  * @param {string[][]} raw
  */
 export const build = (raw) => {
-  return raw.map((row) => row.map(r).join(',')).join('\n');
+  // we could stringify array with ''+arr, but it's 50% slower than .join()
+  // .join() without args is always with ','
+  return raw.map((row) => row.map(r).join()).join('\n');
 }

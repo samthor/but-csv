@@ -1,9 +1,14 @@
 import * as fs from 'fs';
-import { parse } from './index.js';
+import { build, parse } from './index.js';
 const f = fs.readFileSync('1.csv', 'utf-8');
 
 console.time('but-csv');
-const out = parse(f);
+const data = parse(f);
 console.timeEnd('but-csv');
+
+console.time('but-csv render')
+const out = build(data);
+console.timeEnd('but-csv render');
+
 
 //console.info(out);
