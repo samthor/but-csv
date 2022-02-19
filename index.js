@@ -34,7 +34,8 @@ export function *iter(source) {
   let temp;
 
   let sourceCharCodeAt = () => source.charCodeAt(i);
-  let substringIToTemp = () => source.slice(i, temp);  // slice is smaller than substring
+  // gets source.slice(i, new_i) and sets i = new_i
+  let sliceAndSetI = (/** @type {number} */ new_i) => source.slice(i, i = new_i);  // slice is smaller than substring
 
   /** @type {number} */
   let nextIndexTemp;
@@ -45,16 +46,12 @@ export function *iter(source) {
     // we consume at most one col per outer loop
     if (sourceCharCodeAt() == C_NEWLINE) {
       // yielding row and resetting is smaller but about 10% slower
-      yield row.splice(0, row.length);
+      yield row.splice(0);
       ++i;
     }
 
-    if (i >= length) {
+    if (!(i < length)) {
       break;
-    }
-
-    if (i > newline) {
-      newline = nextIndex('\n');
     }
 
     if (sourceCharCodeAt() == C_QUOTE) {
@@ -62,42 +59,51 @@ export function *iter(source) {
       // consume many parts of quoted string
       for (; ;) {
         ++i;
-        temp = nextIndex('"');
-        s += substringIToTemp();
-
-        i = temp + 1;
+        s += sliceAndSetI(nextIndex('"'));
+        ++i;
         temp = sourceCharCodeAt();
-        if (temp == C_COMMA || temp == C_NEWLINE || i >= length) {
+        if (!(temp != C_COMMA && temp != C_NEWLINE && i < length)) {
           break;  // end of string or end of input
-        } else if (temp != C_QUOTE) {
-          --i;  // allow missing double quote _anyway_
         }
+
+        // @ts-ignore you *can* subtract booleans from numbers
+        i -= temp != C_QUOTE;
+        // the above line is this, which saves two bytes:
+        // if (temp != C_QUOTE) {
+        //   --i;  // allow missing double quote _anyway_
+        // }
         s += '"';
       }
 
     } else {
       // this is a "normal" value, ends with a comma or newline
       // look for comma first (educated guess)
-      temp = (temp = nextIndex(',')) > newline ? newline : temp;
+      s = sliceAndSetI((temp = nextIndex(',')) > (newline = i > newline ? nextIndex('\n') : newline) ? newline : temp);
 
-      // the above line is this, which saves a byte:
+      // the above line is this, which saves some bytes:
       /*
+      if (i > newline) {
+        newline = nextIndex('\n');
+      }
       temp = nextIndex(',');
       if (newline < temp) {
         temp = newline;
       }
-      */
-
-      s = substringIToTemp();
+      s = source.slice(i, temp);
       i = temp;
+      */
     }
 
     row.push(s);
 
     // look for ,
-    if (sourceCharCodeAt() == C_COMMA) {
-      ++i;
-    }
+    // @ts-ignore you *can* add booleans to numbers
+    i += sourceCharCodeAt() == C_COMMA;
+
+    // the above line is this, which saves 2 bytes:
+    // if (sourceCharCodeAt() == C_COMMA) {
+    //   ++i;
+    // }
   }
 
   yield row;
