@@ -34,7 +34,8 @@ export function *iter(source) {
   let temp;
 
   let sourceCharCodeAt = () => source.charCodeAt(i);
-  let substringIToTemp = () => source.slice(i, temp);  // slice is smaller than substring
+  // sets temp to target and gets source.slice(i, temp)
+  let substringIToTemp = (/** @type {number} */ target) => source.slice(i, temp = target);  // slice is smaller than substring
 
   /** @type {number} */
   let nextIndexTemp;
@@ -59,9 +60,9 @@ export function *iter(source) {
       // @ts-ignore you *can* add booleans to numbers
       for (; ;i -= temp != C_QUOTE, s += '"') {
         ++i;
-        temp = nextIndex('"');
-        s += substringIToTemp();
+        s += substringIToTemp(nextIndex('"'));
 
+        // @ts-ignore temp is set in the above call
         i = temp + 1;
         temp = sourceCharCodeAt();
         if (!(temp != C_COMMA && temp != C_NEWLINE && i < length)) {
@@ -81,9 +82,9 @@ export function *iter(source) {
     } else {
       // this is a "normal" value, ends with a comma or newline
       // look for comma first (educated guess)
-      temp = (temp = nextIndex(',')) > (newline = i > newline ? nextIndex('\n') : newline) ? newline : temp;
+      s = substringIToTemp((temp = nextIndex(',')) > (newline = i > newline ? nextIndex('\n') : newline) ? newline : temp);
 
-      // the above line is this, which saves two bytes:
+      // the above line is this, which saves some bytes:
       /*
       if (i > newline) {
         newline = nextIndex('\n');
@@ -92,9 +93,8 @@ export function *iter(source) {
       if (newline < temp) {
         temp = newline;
       }
+      s = source.slice(i, temp);
       */
-
-      s = substringIToTemp();
       i = temp;
     }
 
