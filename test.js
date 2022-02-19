@@ -22,6 +22,18 @@ test('quote forever', t => {
   ]);
 });
 
+test('check newline use', t => {
+  const out = parse(`"hello
+there",123
+456`);
+
+  t.deepEqual(out, [
+    ['hello\nthere', '123'],
+    ['456'],
+  ]);
+
+});
+
 test('newline behavior', t => {
   const b = `\n`;
   const out = parse(b);

@@ -2,7 +2,7 @@
 
 <img src="https://storage.googleapis.com/hwhistlr.appspot.com/assets/but-csv.png" width="64" height="64" align="right" hspace="8" />
 
-524 byte (minified) CSV parser and builder.
+488 byte (minified) CSV parser and builder.
 Smaller when compressed.
 Built in ESM only.
 
@@ -11,7 +11,7 @@ Just supports the CSV spec including multi-line and quoted strings.
 
 ## Usage
 
-Install via you favourite package manager.
+Install via you favourite package manager and import `but-csv`.
 Has zero dependencies (obviously).
 
 ```bash
@@ -73,6 +73,11 @@ const out = build([
 // "
 // 1,2
 ```
+
+## Advanced
+
+Be sure to turn on your bundler's tree-shaking ability (good practice in general), but especially if you're only parsing _or_ building, because the code is separate.
+Parsing is about 75% of the code, and building 25%.
 
 ## Speed
 
