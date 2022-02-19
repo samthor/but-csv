@@ -60,7 +60,7 @@ export function *iter(source) {
     if (sourceCharCodeAt() == C_QUOTE) {
       s = '';
       // consume many parts of quoted string
-      for (; ;) {
+      for (; ;(temp != C_QUOTE) && --i, s += '"') {
         ++i;
         temp = nextIndex('"');
         s += substringIToTemp();
@@ -69,10 +69,13 @@ export function *iter(source) {
         temp = sourceCharCodeAt();
         if (!(temp != C_COMMA && temp != C_NEWLINE && i < length)) {
           break;  // end of string or end of input
-        } else if (temp != C_QUOTE) {
-          --i;  // allow missing double quote _anyway_
         }
-        s += '"';
+
+        // the for loop's "increment expression" is this, which saves a byte:
+        // if (temp != C_QUOTE) {
+        //   --i;  // allow missing double quote _anyway_
+        // }
+        // s += '"';
       }
 
     } else {
