@@ -53,10 +53,6 @@ export function *iter(source) {
       break;
     }
 
-    if (i > newline) {
-      newline = nextIndex('\n');
-    }
-
     if (sourceCharCodeAt() == C_QUOTE) {
       s = '';
       // consume many parts of quoted string
@@ -81,10 +77,13 @@ export function *iter(source) {
     } else {
       // this is a "normal" value, ends with a comma or newline
       // look for comma first (educated guess)
-      temp = (temp = nextIndex(',')) > newline ? newline : temp;
+      temp = (temp = nextIndex(',')) > (newline = i > newline ? nextIndex('\n') : newline) ? newline : temp;
 
-      // the above line is this, which saves a byte:
+      // the above line is this, which saves two bytes:
       /*
+      if (i > newline) {
+        newline = nextIndex('\n');
+      }
       temp = nextIndex(',');
       if (newline < temp) {
         temp = newline;
