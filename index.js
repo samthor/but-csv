@@ -67,7 +67,7 @@ export function *iter(source) {
 
         i = temp + 1;
         temp = sourceCharCodeAt();
-        if (temp == C_COMMA || temp == C_NEWLINE || i >= length) {
+        if (!(temp != C_COMMA && temp != C_NEWLINE && i < length)) {
           break;  // end of string or end of input
         } else if (temp != C_QUOTE) {
           --i;  // allow missing double quote _anyway_
