@@ -67,9 +67,10 @@ const out = build([
 ## Speed
 
 It's very fast, but doesn't support streaming.
-On [1.csv](https://github.com/Keyang/csvbench/blob/master/1.csv) from here, parsing all at once:
+On multiple copies of [1.csv](https://github.com/Keyang/csvbench/blob/master/1.csv) from here, parsing all at once:
 
 ```
-papaparse: 300.277ms
-but-csv: 153.889ms
+but-csv: 732.908ms
+papaparse: 1.337s (1.8x)
+csv-parser: 2.283s (3.1x)
 ```
