@@ -34,8 +34,8 @@ export function *iter(source) {
   let temp;
 
   let sourceCharCodeAt = () => source.charCodeAt(i);
-  // sets temp to target and gets source.slice(i, temp)
-  let substringIToTemp = (/** @type {number} */ target) => source.slice(i, temp = target);  // slice is smaller than substring
+  // gets source.slice(i, new_i) and sets i = new_i
+  let sliceAndSetI = (/** @type {number} */ new_i) => source.slice(i, i = new_i);  // slice is smaller than substring
 
   /** @type {number} */
   let nextIndexTemp;
@@ -59,10 +59,8 @@ export function *iter(source) {
       // consume many parts of quoted string
       for (; ;) {
         ++i;
-        s += substringIToTemp(nextIndex('"'));
-
-        // @ts-ignore temp is set in the above call
-        i = temp + 1;
+        s += sliceAndSetI(nextIndex('"'));
+        ++i;
         temp = sourceCharCodeAt();
         if (!(temp != C_COMMA && temp != C_NEWLINE && i < length)) {
           break;  // end of string or end of input
@@ -80,7 +78,7 @@ export function *iter(source) {
     } else {
       // this is a "normal" value, ends with a comma or newline
       // look for comma first (educated guess)
-      s = substringIToTemp((temp = nextIndex(',')) > (newline = i > newline ? nextIndex('\n') : newline) ? newline : temp);
+      s = sliceAndSetI((temp = nextIndex(',')) > (newline = i > newline ? nextIndex('\n') : newline) ? newline : temp);
 
       // the above line is this, which saves some bytes:
       /*
@@ -92,8 +90,8 @@ export function *iter(source) {
         temp = newline;
       }
       s = source.slice(i, temp);
-      */
       i = temp;
+      */
     }
 
     row.push(s);
