@@ -60,9 +60,7 @@ export function *iter(source) {
       for (; ;) {
         ++i;
         appendSliceAndSetI(nextIndex('"'));
-        ++i;
-        temp = sourceCharCodeAt();
-        if (!(temp != C_COMMA && temp != C_NEWLINE && i < length)) {
+        if (!(++i < length && (temp = sourceCharCodeAt()) != C_COMMA && temp != C_NEWLINE)) {
           break;  // end of string or end of input
         }
 
