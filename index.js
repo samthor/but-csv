@@ -97,9 +97,13 @@ export function *iter(source) {
     row.push(s);
 
     // look for ,
-    if (sourceCharCodeAt() == C_COMMA) {
-      ++i;
-    }
+    // @ts-ignore you *can* add booleans to numbers
+    i += sourceCharCodeAt() == C_COMMA;
+
+    // the above line is this, which saves 2 bytes:
+    // if (sourceCharCodeAt() == C_COMMA) {
+    //   ++i;
+    // }
   }
 
   yield row;
