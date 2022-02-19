@@ -56,7 +56,8 @@ export function *iter(source) {
     if (sourceCharCodeAt() == C_QUOTE) {
       s = '';
       // consume many parts of quoted string
-      for (; ;(temp != C_QUOTE) && --i, s += '"') {
+      // @ts-ignore you *can* add booleans to numbers
+      for (; ;i -= temp != C_QUOTE, s += '"') {
         ++i;
         temp = nextIndex('"');
         s += substringIToTemp();
@@ -68,9 +69,12 @@ export function *iter(source) {
         }
 
         // the for loop's "increment expression" is this, which saves a byte:
-        // if (temp != C_QUOTE) {
-        //   --i;  // allow missing double quote _anyway_
-        // }
+        // // @ts-ignore you *can* add booleans to numbers
+        // i -= temp != C_QUOTE;
+        // // the above line is this, which saves two bytes:
+        // // if (temp != C_QUOTE) {
+        // //   --i;  // allow missing double quote _anyway_
+        // // }
         // s += '"';
       }
 
