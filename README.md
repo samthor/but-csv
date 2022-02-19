@@ -2,7 +2,7 @@
 
 <img src="https://storage.googleapis.com/hwhistlr.appspot.com/assets/but-csv.png" width="64" height="64" align="right" hspace="8" />
 
-488 byte (minified) CSV parser and builder.
+484 byte (minified) CSV parser and builder.
 Smaller when compressed.
 Built in ESM only.
 

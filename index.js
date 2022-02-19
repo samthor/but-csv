@@ -4,16 +4,6 @@ const C_NEWLINE = 10;
 const C_QUOTE = 34;
 
 /**
- * Parse a whole CSV.
- *
- * @param {string} source
- * @return {string[][]}
- */
-export const parse = (source) => {
-  return [...iter(source)];
-}
-
-/**
  * Iterate through a CSV. Returns all fields as string. Each row can be of varied length.
  *
  * @param {string} source
@@ -110,6 +100,17 @@ export function *iter(source) {
 }
 
 
+/**
+ * Parse a whole CSV.
+ *
+ * @param {string} source
+ * @return {string[][]}
+ */
+const parse = (source) => {
+  return [...iter(source)];
+}
+
+
 let needsQuoteRegexp = /[\"\n,]/;
 let globalQuote = /"/g;
 
@@ -131,8 +132,11 @@ let r = (raw) => {
  *
  * @param {any[][]} raw
  */
-export const build = (raw) => {
+const build = (raw) => {
   // we could stringify array with ''+arr, but it's 50% slower than .join()
   // .join() without args is always with ','
   return raw.map((row) => row.map(r).join()).join('\n');
 }
+
+
+export { build, parse };
