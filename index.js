@@ -45,7 +45,7 @@ export function *iter(source) {
     // we consume at most one col per outer loop
     if (sourceCharCodeAt() == C_NEWLINE) {
       // yielding row and resetting is smaller but about 10% slower
-      yield row.splice(0, row.length);
+      yield row.splice(0);
       ++i;
     }
 
