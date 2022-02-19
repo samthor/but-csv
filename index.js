@@ -49,7 +49,7 @@ export function *iter(source) {
       ++i;
     }
 
-    if (i >= length) {
+    if (!(i < length)) {
       break;
     }
 
