@@ -2,7 +2,7 @@
 
 <img src="https://storage.googleapis.com/hwhistlr.appspot.com/assets/but-csv.png" width="64" height="64" align="right" hspace="8" />
 
-520 byte (minified) CSV parser and builder.
+524 byte (minified) CSV parser and builder.
 Smaller when compressed.
 Built in ESM only.
 
@@ -20,15 +20,20 @@ $ npm install but-csv
 
 ### Parse
 
+Parses a CSV into an array of array of strings.
+Supports varied line lengths.
+Does not convert to numbers or any other formats.
+
 ```js
 import { parse } from 'but-csv';
 
-const out = parse('foo,bar,zing\n1,2,3');
-// out will be [['foo', 'bar', 'zing'], ['1', '2', '3']]
+const out = parse('foo,bar,zing\n1,2,3\n4,5');
+// out will be [['foo', 'bar', 'zing'], ['1', '2', '3'], ['4','5']]
 ```
 
 Only supports passing a `string` (not a `Buffer` or friends).
 Node's operations on `string` are so much faster than on raw bytes (10x improvement).
+If you're parsing a file, do this:
 
 ```js
 const f = fs.readFileSync('source.csv', 'utf-8');
@@ -37,25 +42,30 @@ const out = parse(f);
 
 ### Iterator
 
-Like parse, but you get each row at a time and can return early.
+Like parse, but you get each row at a time so you can stop early.
 
 ```js
 import { iter } from 'but-csv';
 
-for (const row of iter('foo,bar,zing\n1,2,3')) {
-  // will be an array of ['foo', 'bar', 'zing'],
-  // then an array of ['1', '2', '3']
+for (const row of iter('foo,bar,zing\n1,2,3\n4,5')) {
+  // row will be an array of:
+  // 1. ['foo', 'bar', 'zing'],
+  // 2. ['1', '2', '3']
+  // 3. ['4','5']
 }
 ```
 
 ### Build
+
+You can pass any value and it will be stringified before render, useful for numbers.
+This is unlike the parser above, which only returns strings.
 
 ```js
 import { build } from 'but-csv';
 
 const out = build([
   ['hello', 'there"\n'],
-  ['1', '2'],
+  [1, 2],
 ]);
 
 // out will be:
@@ -67,7 +77,7 @@ const out = build([
 ## Speed
 
 It's very fast, but doesn't support streaming.
-On multiple copies of [1.csv](https://github.com/Keyang/csvbench/blob/master/1.csv) from here, parsing all at once:
+To parse multiple copies of [1.csv](https://github.com/Keyang/csvbench/blob/master/1.csv) from here, parsing all at once:
 
 ```
 but-csv: 732.908ms

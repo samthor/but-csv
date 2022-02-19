@@ -12,8 +12,8 @@
     "esbuild": "^0.14.21"
   },
   "name": "but-csv",
-  "version": "2.0.7",
-  "description": "but.. csv",
+  "version": "2.0.8",
+  "description": "but.. csv; 524 byte CSV parser/builder",
   "scripts": {
     "test": "ava",
     "prepublishOnly": "esbuild --minify --tree-shaking=true index.js > index.min.mjs"

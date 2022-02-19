@@ -4,6 +4,8 @@ const C_NEWLINE = 10;
 const C_QUOTE = 34;
 
 /**
+ * Parse a whole CSV.
+ *
  * @param {string} source
  * @return {string[][]}
  */
@@ -12,7 +14,10 @@ export const parse = (source) => {
 }
 
 /**
+ * Iterate through a CSV. Returns all fields as string. Each row can be of varied length.
+ *
  * @param {string} source
+ * @return {Generator<string[], void, void>}
  */
 export function *iter(source) {
   let i = 0;
@@ -107,7 +112,8 @@ let globalQuote = /"/g;
  * @param {string} raw
  */
 let r = (raw) => {
-  if (!needsQuoteRegexp.test(raw)) {
+  // we hide string conversion inside this arg
+  if (!needsQuoteRegexp.test(raw += '')) {
     return raw;
   }
   return `"${raw.replace(globalQuote, '""')}"`;
@@ -115,7 +121,9 @@ let r = (raw) => {
 
 
 /**
- * @param {string[][]} raw
+ * Builds a CSV from raw data. Every value is stringified before render.
+ *
+ * @param {any[][]} raw
  */
 export const build = (raw) => {
   // we could stringify array with ''+arr, but it's 50% slower than .join()

@@ -35,6 +35,11 @@ test('newline behavior', t => {
 test('enc', t => {
   t.is(build([['1', '2', '3']]), '1,2,3');
   t.is(build([['1,', '2\n', '3']]), '"1,","2\n",3');
+
+  t.is(build([[1,2,3.25]]), '1,2,3.25');
+
+  const x = { toString() { return 'but,t'; }};
+  t.is(build([[x, {}]]), '"but,t",[object Object]');
 });
 
 test('string', t => {
