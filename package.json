@@ -2,7 +2,7 @@
   "main": "index.js",
   "exports": {
     ".": {
-      "import": "./index.min.js"
+      "import": "./index.min.mjs"
     }
   },
   "type": "module",
@@ -12,8 +12,8 @@
     "esbuild": "^0.14.21"
   },
   "name": "but-csv",
-  "version": "2.0.10",
-  "description": "but.. csv; 484 byte CSV parser/builder",
+  "version": "2.0.11",
+  "description": "but.. csv; 481 byte CSV parser/builder",
   "scripts": {
     "test": "ava",
     "build": "node build-all.js",
