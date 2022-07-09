@@ -22,9 +22,9 @@
   "description": "but.. csv; 481 byte CSV parser/builder",
   "scripts": {
     "test": "ava",
-    "build": "node build-all.js",
+    "build": "node build-all.js && npm run dts",
     "dts": "tsc index.js --declaration --allowJs --emitDeclarationOnly",
-    "prepublishOnly": "npm run build && npm run dts"
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
