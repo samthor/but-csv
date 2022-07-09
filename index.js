@@ -127,8 +127,9 @@ let r = (raw) => {
 
 /**
  * Builds a CSV from raw data. Every value is stringified before render.
- *
- * @param {any[][]} raw
+ * 
+ * @template {string} T
+ * @param {T[][]} raw
  */
 const build = (raw) => {
   // we could stringify array with ''+arr, but it's 50% slower than .join()

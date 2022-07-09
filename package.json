@@ -6,10 +6,16 @@
     }
   },
   "type": "module",
+  "types": "./index.d.ts",
+  "files": [
+    "index.d.ts",
+    "index.min.mjs"
+  ],
   "devDependencies": {
     "@types/node": "^17.0.17",
     "ava": "^4.0.1",
-    "esbuild": "^0.14.21"
+    "esbuild": "^0.14.21",
+    "typescript": "^4.7.4"
   },
   "name": "but-csv",
   "version": "2.0.11",
@@ -17,7 +23,8 @@
   "scripts": {
     "test": "ava",
     "build": "node build-all.js",
-    "prepublishOnly": "npm run build"
+    "dts": "tsc index.js --declaration --allowJs --emitDeclarationOnly",
+    "prepublishOnly": "npm run build && npm run dts"
   },
   "repository": {
     "type": "git",
