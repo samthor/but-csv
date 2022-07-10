@@ -18,7 +18,7 @@
     "typescript": "^4.7.4"
   },
   "name": "but-csv",
-  "version": "2.0.11",
+  "version": "2.0.12",
   "description": "but.. csv; 481 byte CSV parser/builder",
   "scripts": {
     "test": "ava",
