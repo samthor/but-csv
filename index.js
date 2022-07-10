@@ -114,10 +114,10 @@ let globalQuote = /"/g;
 
 
 /**
- * @param {string} raw
+ * @param {any} raw
  */
 let r = (raw) => {
-  // we hide string conversion inside this arg
+  // we hide string conversion inside this arg: on the `return`, raw is already stringified
   if (!needsQuoteRegexp.test(raw += '')) {
     return raw;
   }
@@ -128,8 +128,7 @@ let r = (raw) => {
 /**
  * Builds a CSV from raw data. Every value is stringified before render.
  * 
- * @template {string} T
- * @param {T[][]} raw
+ * @param {any[][]} raw
  */
 const build = (raw) => {
   // we could stringify array with ''+arr, but it's 50% slower than .join()
