@@ -23,7 +23,7 @@ export function *iter(source) {
   /** @type {number} */
   let temp;
 
-  let sourceCharCodeAt = () => source.charCodeAt(i);
+  let sourceCharCodeAt = _ => source.charCodeAt(i);
   // appends source.slice(i, new_i) to s and sets i = new_i
   let appendSliceAndSetI = (/** @type {number} */ new_i) => s += source.slice(i, i = new_i);  // slice is smaller than substring
 
@@ -66,7 +66,7 @@ export function *iter(source) {
     } else {
       // this is a "normal" value, ends with a comma or newline
       // look for comma first (educated guess)
-      appendSliceAndSetI((temp = nextIndex(',')) > (newline = i > newline ? nextIndex('\n') : newline) ? newline : temp);
+     appendSliceAndSetI((temp = nextIndex(',')) > (newline = i > newline ? nextIndex('\n') : newline) ? newline : temp);
 
       // the above line is this, which saves some bytes:
       /*
@@ -109,7 +109,7 @@ const parse = (source) => {
 }
 
 
-let needsQuoteRegexp = /[\"\n,]/;
+let needsQuoteRegexp = /["\n,]/;
 let globalQuote = /"/g;
 
 
