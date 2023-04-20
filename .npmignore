@@ -1,3 +1,4 @@
 *.csv
 test.js
+speed.js
 tsconfig.json
