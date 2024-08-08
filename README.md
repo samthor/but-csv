@@ -9,6 +9,13 @@ Built in ESM only.
 Doesn't care about headers, keyed rows, anything but strings.
 Just supports the CSV spec including multi-line and quoted strings.
 
+Does not support:
+- `\r\n` (old DOS newlines)
+- streaming
+
+If you need those features, try [tiddlycsv](https://www.npmjs.com/package/tiddlycsv), which is a bit bigger.
+This package is intentionally tiny, mostly to prove a point.
+
 ## Usage
 
 Install via you favourite package manager and import `but-csv`.
